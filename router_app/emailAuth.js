@@ -2,9 +2,12 @@ const express = require("express");
 const nodemailer = require("nodemailer");
 const router = express.Router();
 const smtpPool = require("nodemailer-smtp-pool");
-const { User } = require("../model_app/user");
+const { Personal } = require("../model_app/user");
 const wrapper = require("../common_app/wrapper");
 const password = process.env.EMAIL_PW || require("../mailConfig");
+
+const { emailContents } = require("../model_app/emailHtml");
+
 router.post(
   "/",
   wrapper(async (req, res, next) => {
@@ -12,16 +15,19 @@ router.post(
     const config = {
       mailer: {
         service: "Gmail",
-        host: "fpemzkvpt0@gmail.com",
-        user: "fpemzkvpt0",
+        host: "STAMP.owner@gmail.com",
+        user: "STAMP.owner",
         password
       }
     };
-    const from = "STAMP < fpemzkvpt0@gmail.com >";
+    const from = "STAMP < STAMP.owner@gmail.com >";
     const to = inputEmail;
     const subject = "STMAP 인증번호 안내입니다.";
-    const authNo = Math.floor(Math.random() * 10000);
-    const html = `<p>인증번호입니다</p> \n <p>인증번호는 ${authNo}</p>`;
+    const authNo = Math.floor(Math.random() * 10 ** 15)
+      .toString()
+      .slice(0, 4);
+    const html = emailContents(authNo);
+    console.log(authNo);
 
     const mailOptions = {
       from,
@@ -46,17 +52,20 @@ router.post(
         maxMessages: 10
       })
     );
-
     // 메일을 전송하는 부분
     transporter.sendMail(mailOptions, async (err, res2) => {
       if (err) {
         console.log("failed... => ", err);
       } else {
         console.log("succeed... => ", res2);
-        await User.updateOne(
+        await Personal.updateOne(
           { email: inputEmail },
           { $set: { emailAuth: authNo } }
         );
+        setTimeout(() => {
+          User.updateOne({ email: inputEmail }, { $set: { emailAuth: "" } });
+        }, 300000);
+
         res.json({ result: true });
         next();
       }
@@ -65,6 +74,58 @@ router.post(
     });
   })
 );
+router.post(
+  "/emailCheck",
+  wrapper(async (req, res, next) => {
+    const { email, inputAuthNo } = req.body;
+    const rs = await Personal.findOne(
+      {
+        email: email
+      },
+      { emailAuth: 1 }
+    );
+    if (rs.emailAuth === inputAuthNo) {
+      const rs2 = await Personal.updateOne(
+        { email },
+        { $set: { emailCheck: true } }
+      );
+      if (rs2) {
+        res.json({ result: true });
+      } else {
+        res.json({ result: false });
+      }
+    } else {
+      res.json({ result: false });
+    }
+    next();
+  })
+);
+
+router.post(
+  "/emailCheck",
+  wrapper(async (req, res, next) => {
+    const { email, inputAuthNo } = req.body;
+    const rs = await Personal.findOne(
+      {
+        email: email
+      },
+      { emailAuth: 1 }
+    );
+    if (rs.emailAuth === inputAuthNo) {
+      const rs2 = await Personal.updateOne(
+        { email },
+        { $set: { emailCheck: true } }
+      );
+      if (rs2) {
+        res.json({ result: true });
+      } else {
+        res.json({ result: false });
+      }
+    } else {
+      res.json({ result: false });
+    }
+    next();
+  })
+);
 
 module.exports = router;
-//jlrhglgfgteghwla
