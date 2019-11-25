@@ -85,7 +85,7 @@ router.post(
     } = req.body;
     const user = await User_web.findOne({ id: id });
     if (!user) {
-      res.json({ result: false });
+      res.json({ result: false, msg: "로그인 실패" });
       next();
       return;
     }
@@ -116,12 +116,12 @@ router.post(
         company_name,
         company_location,
         phonenumber,
-        ticket
+        ticket, msg: '토큰 발행 실패'
         // admin: user.admin
       });
       next();
     } else {
-      res.json({ result: false });
+      res.json({ result: false, msg: "로그인오류" });
       next();
     }
   })
