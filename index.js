@@ -7,7 +7,7 @@ const read = require("./router_app/read");
 const modify = require("./router_app/modify");
 const config = require("./common_app/jwt_config");
 const auth = require("./common_app/auth")();
-const web_auth = require("./common_web/auth")();
+const web_auth = require("./common_web/web_auth")();
 const emailAuth = require("./router_app/emailAuth");
 const withdraw = require("./router_app/withdraw");
 const web_user = require("./routers_web/web_user");
@@ -28,7 +28,7 @@ app.use((req, res, next) => {
     .catch(e => next(e));
 });
 app.use(auth.initiallze());
-app.use(web_auth.initiallze());
+app.use(web_auth.initialize());
 app.use(express.json());
 app.use("/auth", user);
 app.use("/web_auth", web_user);
@@ -43,4 +43,4 @@ app.use(() => mongoose.disconnect());
 
 const PORT = process.env.PORT || 3000;
 
-app.listen(PORT, () => console.log(`Listening on port ${PORT}...`));
+app.listen(PORT, () => console.log(`서버가 작동중 입니다 포트는 -->> ${PORT} 로딩중...`));

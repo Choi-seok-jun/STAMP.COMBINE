@@ -96,27 +96,13 @@ router.post(
         {
           id: user._id,
           password: user.password,
-          name: user.name,
-          company_no: user.company_no,
-          company_name: user.company_name,
-          company_location: user.company_location,
-          phonenumber: user.phonenumber,
-          ticket: user.ticket
         },
         jwtSecret,
         { expiresIn: "1h" }
       );
       res.json({
         result: true,
-        token,
-        id,
-        password,
-        name,
-        company_no,
-        company_name,
-        company_location,
-        phonenumber,
-        ticket
+        token
         // admin: user.admin
       });
       next();
