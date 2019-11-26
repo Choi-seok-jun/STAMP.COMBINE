@@ -38,6 +38,7 @@ app.use("/auth/read", read);
 app.use("/auth/modify", modify);
 app.use("/auth/emailAuth", emailAuth);
 app.use("/auth/withdraw", withdraw);
+app.use("/sample", require("./routers_web/sample_Ad"));
 
 app.use(() => mongoose.disconnect());
 
