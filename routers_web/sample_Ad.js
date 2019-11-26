@@ -53,25 +53,25 @@ router.post("/upload", wrapper(async (req, res, next) => {
 router.post("/like", wrapper(async (req, res, next) => {
     console.log(req.body);
 
-    const { 광고주소, 접속한사람주소 } = req.body;
+    const { 광고주소, 접속한아이디 } = req.body;
 
     //1. 광고주소에서 접속한사람의 주소가 있으면, 좋아요 취소
     //2. 없으면, 좋아요 추가
 
     const theAd = await Sample.findById(광고주소);
-    const theUser = await User.findById(접속한사람주소);
+    const 접속한사람정보 = await User.find({ id: 접속한아이디 });
 
-    const islikeUser = theAd.likedUser.find(el => el == 접속한사람주소);
+    const islikeUser = theAd.likedUser.find(el => el == 접속한사람정보._id);
     if (islikeUser) {
         // 접속한사람을 삭제해
         await Sample.updateOne({ _id: 광고주소 }, { $pull: { likedUser: islikeUser } });
-        await User.updateOne({ _id: 접속한사람주소 }, { $pull: { like: 광고주소 } });
+        await User.updateOne({ _id: 접속한사람정보._id }, { $pull: { like: 광고주소 } });
         res.json({ result: "좋아요 취소" });
     } else {
-        theAd.likedUser.push(접속한사람주소);
-        theUser.like.push(광고주소);
+        theAd.likedUser.push(접속한사람정보._id);
+        접속한사람정보.like.push(광고주소);
         await theAd.save();
-        await theUser.save();
+        await 접속한사람정보.save();
         res.json({ result: "좋아요 등록" });
     }
     next();
