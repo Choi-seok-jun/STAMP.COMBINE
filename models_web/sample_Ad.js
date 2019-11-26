@@ -3,6 +3,7 @@ const { Schema, model } = mongoose;
 
 const sampleSchema = new Schema({
     author: { type: mongoose.Types.ObjectId, ref: "User_web" }, // 발행자
+    authorName: String,
     title: String,          // 미션명
     discription: String,    // 요약
     attendWay: String,      // 참여방법
