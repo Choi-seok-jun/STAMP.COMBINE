@@ -30,7 +30,7 @@ router.post("/upload", wrapper(async (req, res, next) => {
     } = req.body;
 
     // 작성자 검색
-    const theAuthor = await User_web.find({ id: web_userId });
+    const theAuthor = await User_web.findOne({ id: web_userId });
 
     const new_sample = new Sample({
         author: theAuthor._id,
