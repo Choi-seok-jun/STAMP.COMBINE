@@ -14,7 +14,8 @@ const sampleSchema = new Schema({
     tip: String,            // 팁 
     views: { type: Number, default: 0 },       // 조회수
     likedUser: [{ type: mongoose.Types.ObjectId, ref: "User" }],    //좋아요 여부
-
+    coordinate: { latitud: { type: Number }, longitude: { type: Number } },
+    address: { type: String },
     // url: String,
     // survey1: String,
     // survey2: String,
