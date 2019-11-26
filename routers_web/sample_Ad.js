@@ -34,6 +34,7 @@ router.post("/upload", wrapper(async (req, res, next) => {
 
     const new_sample = new Sample({
         author: theAuthor._id,
+        authorName: web_userId,
         title,
         discription,
         attendWay,
