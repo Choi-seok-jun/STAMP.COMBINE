@@ -27,6 +27,8 @@ router.post("/upload", wrapper(async (req, res, next) => {
         startDate,
         endDate,
         tip,
+        coordinate,
+        address,
     } = req.body;
 
     // 작성자 검색
@@ -43,6 +45,8 @@ router.post("/upload", wrapper(async (req, res, next) => {
         startDate,
         endDate,
         tip,
+        coordinate,
+        address,
     });
     const saveResult = await new_sample.save(); // db에 저장
     console.log(saveResult);
