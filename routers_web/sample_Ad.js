@@ -60,19 +60,21 @@ router.post("/like", wrapper(async (req, res, next) => {
 
     const theAd = await Sample.findById(광고주소);
     const 접속한사람정보 = await User.findOne({ id: 접속한아이디 });
-
-    const islikeUser = theAd.likedUser.find(el => el == 접속한사람정보._id);
+    // console.log("광고", theAd.likedUser);
+    // console.log(접속한사람정보);
+    const islikeUser = theAd.likedUser.find(el => el.toString() == 접속한사람정보._id.toString());
+    // console.log("-------------------------------", islikeUser);
     if (islikeUser) {
         // 접속한사람을 삭제해
         await Sample.updateOne({ _id: 광고주소 }, { $pull: { likedUser: islikeUser } });
         await User.updateOne({ _id: 접속한사람정보._id }, { $pull: { like: 광고주소 } });
-        res.json({ result: "좋아요 취소" });
+        res.json({ result: false, msg: "좋아요 취소" });
     } else {
         theAd.likedUser.push(접속한사람정보._id);
         접속한사람정보.like.push(광고주소);
         await theAd.save();
         await 접속한사람정보.save();
-        res.json({ result: "좋아요 등록" });
+        res.json({ result: true, msg: "좋아요 등록" });
     }
     next();
 }));
