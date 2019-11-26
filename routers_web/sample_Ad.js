@@ -80,6 +80,18 @@ router.post("/like", wrapper(async (req, res, next) => {
     next();
 }));
 
+// userAdd 반환
+router.post("/whoami", wrapper(async () => {
+    const userid = req.body.userid;
+
+    const user = await User.findOne({ id: userid });
+
+    user
+        ? res.json({ result: true, userAdd: user._id })
+        : res.json({ result: false });
+
+}));
+
 
 
 module.exports = router;
