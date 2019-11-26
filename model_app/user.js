@@ -10,9 +10,18 @@ const { Schema, model } = mongoose;
 
 const personalSchema = new Schema({
   // 입력값
-  name: String,
-  email: { type: String, unique: true },
-  phone_num: { type: String, unique: true },
+  name: {
+    type: String, lowercase: true,
+    required: true
+  },
+  email: {
+    type: String, unique: true, lowercase: true,
+    required: true
+  },
+  phone_num: {
+    type: String, unique: true,
+    required: true
+  },
   // 나중에 채워지는 값
   admin: { type: Boolean, default: false },
   userAdd: { type: mongoose.Types.ObjectId, ref: "User" },
@@ -36,8 +45,12 @@ function validatePersonal(personal) {
 }
 
 const userSchema = new Schema({
-  id: { type: String, unique: true },
-  password: String,
+  id: {
+    type: String, unique: true, lowercase: true,
+    required: true
+  },
+  password: { type: String, required: true },
+  like: [{ type: mongoose.Types.ObjectId, ref: "Advertise" }],
   persAdd: { type: mongoose.Types.ObjectId, ref: "Personal" }
 });
 
