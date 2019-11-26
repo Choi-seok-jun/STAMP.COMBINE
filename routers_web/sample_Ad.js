@@ -59,7 +59,7 @@ router.post("/like", wrapper(async (req, res, next) => {
     //2. 없으면, 좋아요 추가
 
     const theAd = await Sample.findById(광고주소);
-    const 접속한사람정보 = await User.find({ id: 접속한아이디 });
+    const 접속한사람정보 = await User.findOne({ id: 접속한아이디 });
 
     const islikeUser = theAd.likedUser.find(el => el == 접속한사람정보._id);
     if (islikeUser) {
