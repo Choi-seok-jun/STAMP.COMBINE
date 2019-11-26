@@ -27,6 +27,7 @@ router.post("/join", wrapper(async (req, res, next) => {
   const hashedPW = await bcrypt.hash(password, saltRound);
 
   // 새로운 [개인정보] 생성 및 DB에 저장
+  User.aggregate
   const new_personal = new Personal({ name, email, phone_num });
   await new_personal.save();
 
