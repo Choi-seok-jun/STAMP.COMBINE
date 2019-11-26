@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const { Advertise, validateAdver } = require("../models_web/advertise");
+const { User, validateUser } = require("../model_app/user");
 const wrapper = require("../common_web/wrapper");
 
 router.get(
@@ -74,11 +75,38 @@ router.get(
   "/mission_check",
   wrapper(async (req, res, next) => {
     const advertises = await Advertise.find();
-    advertise.views++;
-    advertise.save();
     res.json({ advertises });
     next();
   })
 );
+
+// 해당 광고 좋아요
+router.post("/like", wrapper(async (req, res, next) => {
+  console.log(req.body);
+  const { 광고주소, 접속한사람주소 } = req.body;
+
+  //1. 광고주소에서 접속한사람의 주소가 있으면, 좋아요 취소
+  //2. 없으면, 좋아요 추가
+
+  const theAd = await Advertise.findById(광고주소);
+  const theUser = await User.findById(접속한사람주소);
+
+  const islikeUser = theAd.likedUser.find(el => el == 접속한사람주소);
+  if (islikeUser) {
+    // 접속한사람을 삭제해
+    await Advertise.updateOne({ _id: 광고주소 }, { $pull: { likedUser: islikeUser } });
+    await User.updateOne({ _id: 접속한사람주소 }, { $pull: { like: 광고주소 } });
+    res.json({ result: "좋아요 취소" });
+  } else {
+    theAd.likedUser.push(접속한사람주소);
+    theUser.like.push(광고주소);
+    await theAd.save();
+    await theUser.save();
+    res.json({ result: "좋아요 등록" });
+  }
+  next();
+
+}));
+
 
 module.exports = router;
