@@ -3,7 +3,7 @@ const Joi = require("@hapi/joi");
 const { Schema, model } = mongoose;
 
 const advertiseSchema = new Schema({
-  id: { type: mongoose.Types.ObjectId, ref: "User" },
+  id: { type: mongoose.Types.ObjectId, ref: "User_web" },
   title: String,
   missionUser: String,
   num: Number,
@@ -17,7 +17,8 @@ const advertiseSchema = new Schema({
   imageUpLoad: String,
   category: String,
   ticket: Number,
-  views: { type: Number, default: 0 }
+  views: { type: Number, default: 0 },
+  likedUser: [{ type: mongoose.Types.ObjectId, ref: "User" }],
 });
 
 const Advertise = model("Advertise", advertiseSchema);
