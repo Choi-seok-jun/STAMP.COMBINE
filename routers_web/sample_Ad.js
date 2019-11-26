@@ -85,7 +85,7 @@ router.post("/like", wrapper(async (req, res, next) => {
 }));
 
 // userAdd 반환
-router.post("/whoami", wrapper(async () => {
+router.post("/whoami", wrapper(async (req, res, next) => {
     const userid = req.body.userid;
 
     const user = await User.findOne({ id: userid });
@@ -94,6 +94,7 @@ router.post("/whoami", wrapper(async () => {
         ? res.json({ result: true, userAdd: user._id })
         : res.json({ result: false });
 
+    next();
 }));
 
 
