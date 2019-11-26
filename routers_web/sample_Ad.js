@@ -27,6 +27,8 @@ router.post("/upload", wrapper(async (req, res, next) => {
         startDate,
         endDate,
         tip,
+        coordinate,
+        address,
     } = req.body;
 
     // 작성자 검색
@@ -43,6 +45,8 @@ router.post("/upload", wrapper(async (req, res, next) => {
         startDate,
         endDate,
         tip,
+        coordinate,
+        address,
     });
     const saveResult = await new_sample.save(); // db에 저장
     console.log(saveResult);
@@ -78,6 +82,18 @@ router.post("/like", wrapper(async (req, res, next) => {
         res.json({ result: true, msg: "좋아요 등록" });
     }
     next();
+}));
+
+// userAdd 반환
+router.post("/whoami", wrapper(async () => {
+    const userid = req.body.userid;
+
+    const user = await User.findOne({ id: userid });
+
+    user
+        ? res.json({ result: true, userAdd: user._id })
+        : res.json({ result: false });
+
 }));
 
 
